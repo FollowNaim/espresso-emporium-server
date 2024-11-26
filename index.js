@@ -53,6 +53,39 @@ async function run() {
       const result = await coffeesCollection.findOne(query);
       res.send(result);
     });
+
+    // Updating coffee data
+    app.put("/coffees/:id", async (req, res) => {
+      const id = req.params.id;
+      const coffee = req.body;
+      const updatedCoffee = {
+        $set: {
+          name: coffee.name,
+          chef: coffee.chef,
+          supplier: coffee.nasupplierme,
+          taste: coffee.taste,
+          category: coffee.category,
+          details: coffee.details,
+          photo: coffee.photo,
+        },
+      };
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const result = await coffeesCollection.updateOne(
+        filter,
+        updatedCoffee,
+        options
+      );
+      res.send(result);
+    });
+
+    // Delete a coffee
+    app.delete("/coffees/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await coffeesCollection.deleteOne(query);
+      res.send(result);
+    });
   } catch (err) {
     await client.close();
     console.log(err);
