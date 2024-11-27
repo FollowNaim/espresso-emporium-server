@@ -86,6 +86,14 @@ async function run() {
       const result = await coffeesCollection.deleteOne(query);
       res.send(result);
     });
+
+    // Find coffee via category
+    app.get("/coffees/category/:category", async (req, res) => {
+      const category = req.params.category;
+      const query = { category: category };
+      const result = await coffeesCollection.find(query).toArray();
+      res.send(result);
+    });
   } catch (err) {
     await client.close();
     console.log(err);
