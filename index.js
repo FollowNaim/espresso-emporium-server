@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const { configDotenv } = require("dotenv");
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -12,6 +11,10 @@ require("dotenv").config();
 
 app.get("/", (req, res) => {
   res.send("Coffee server is running");
+});
+
+app.get("/hello", (req, res) => {
+  res.send("hello world");
 });
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.sdg7y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -27,12 +30,13 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
-    await client.db("admin").command({ ping: 1 });
+    // await client.connect();
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
     const coffeesCollection = client.db("coffeesDB").collection("coffees");
+
     // adding new coffes to the database
     app.post("/coffees", async (req, res) => {
       const coffee = req.body;
@@ -99,7 +103,9 @@ async function run() {
     console.log(err);
   }
 }
-run().catch(console.log);
+run().catch((err) => {
+  console.log(err);
+});
 
 // Listening to the port
 app.listen(port, () => {
